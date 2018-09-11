@@ -1,0 +1,9 @@
+id,utc_created,utc_updated,region,indicator,value,year
+1,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the European Region","Climate change attributable deaths per 100'000 capita",0.15,2004
+2,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","High income countries (WHO Income)","Climate change attributable deaths per 100'000 capita",0.02,2004
+3,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the South-East Asia Region","Climate change attributable deaths per 100'000 capita",3,2004
+4,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the Western Pacific Region","Climate change attributable deaths per 100'000 capita",0.27,2004
+5,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the Americas","Climate change attributable deaths per 100'000 capita",0.32,2004
+6,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Global (WHO Income)","Climate change attributable deaths per 100'000 capita",2,2004
+7,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the Eastern Mediterranean Region","Climate change attributable deaths per 100'000 capita",4,2004
+8,"2015-11-13 15:18:35.128712","2015-11-13 15:18:35.128831","Low- and middle-income countries of the African Region","Climate change attributable deaths per 100'000 capita",8,2004
