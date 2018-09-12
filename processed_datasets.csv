@@ -1,4 +1,4 @@
-,dataset_name,resource_name,resource_filename,resource_url,new_resource_url,scraperwiki_name,dir,file,status,update_status
+index,dataset_name,resource_name,resource_filename,resource_url,new_resource_url,scraperwiki_name,dir,file,status,update_status
 0,fts-ebola-indicator,output.zip,output.zip,https://ds-ec2.scraperwiki.com/m3gwddd/yhe8ykk1zhnnf04/http/output.zip,,FTS Ebola,datasets/fts-ebola-indicator,datasets/fts-ebola-indicator/output.zip,SKIPPED,
 1,sidih-indicators,All_Indicator_Data.csv,All_Indicator_Data.csv,https://ds-ec2.scraperwiki.com/egzfk1p/siqsxsgjnxgk3r2/cgi-bin/csv/indicators_data.csv,,Colombia SIDIH,datasets/sidih-indicators,datasets/sidih-indicators/All_Indicator_Data.csv,SKIPPED,
 2,key-humanitarian-figure,ocha_syria_key_figures.csv,ocha_syria_key_figures.csv,https://ds-ec2.scraperwiki.com/afbxebw/axpq2tkfrwgi5em/cgi-bin/csv/ocha_syria_topline_figures.csv,,OCHA Syria Key Humanitarian Figures,datasets/key-humanitarian-figure,datasets/key-humanitarian-figure/ocha_syria_key_figures.csv,SKIPPED,

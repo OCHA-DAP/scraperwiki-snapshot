@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>ScraperWiki backup</title>
+
+    <!-- Required Stylesheets -->
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+
+    <!-- Required scripts -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+
+<body>
+    <!-- Our application root element -->
+    <div id="app">
+        <b-container>
+            <b-jumbotron header="ScraperWiki backup" lead="Overview of datasets and resources copied from scraperwiki.">
+                <p>
+                        <b-btn variant="primary" href="https://github.com/orest-d/scraperwiki-snapshot">Repository</b-btn>
+                        <b-btn variant="primary" href="https://github.com/orest-d/scraperwiki-backup">Backup Scripts</b-btn>                                
+                    </p>
+                <h3>Tables:</h3>
+                <ol>
+                        <li><b-btn variant="success sm" href="datasets with scraperwiki.xlsx">xlsx</b-btn> - Scraperwiki datasets</li>
+                        <li><b-btn variant="success sm" href="datasets with scraperwiki_additional.xlsx">xlsx</b-btn> - Extended Scraperwiki datasets. Contains additional resources to be included on top of 1.</li>
+                        <li><b-btn variant="success sm" href="processed_datasets.csv">csv</b-btn> Processed datasets - table below with more details. <b-badge>{{status}}</b-badge></li>
+                </ol>
+            </b-jumbotron>
+            <table class="table">
+                <tr><th v-for="h in fhead">{{h}}</th></tr>
+                <tr v-for="row in frows">
+                    <td><a :href="'https://test-data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a></td>
+                    <td>
+                            <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
+                            <span v-else>{{row.resource_filename}}</span>
+                    </td>
+                    <td>
+                            <b-badge v-if="row.status=='SKIPPED'" variant="info">{{row.status}}</b-badge>
+                            <b-badge v-if="row.status=='Ok'" variant="light">{{row.status}}</b-badge>
+                            <b-badge v-if="row.status=='OK'" variant="dark">{{row.status}}</b-badge>
+                            <b-badge v-if="row.status=='ERROR'" variant="danger">{{row.status}}</b-badge>
+                        
+                    </td>
+                    <td>
+                            <b-badge v-if="row.update_status=='ERROR'" variant="danger">{{row.update_status}}</b-badge>
+                            <span v-else>{{row.update_status}}</span>
+                    </td>
+                </tr>
+            </table>
+            <!--
+            <table class="table">
+                <tr><th v-for="h in head">{{h}}</th></tr>
+                <tr v-for="row in rows">
+                    <td v-for="item in row">{{item}}</td>
+                </tr>
+            </table>
+        -->
+        </b-container>
+    </div>
+
+    <!-- Start running your app -->
+    <script>
+        window.app = new Vue({
+            el: "#app",
+            data: {
+                name: '',
+                data: '',
+                pdata: '',
+                status: '?',
+                fhead: ["Dataset","Resource","Status","Update"]
+            },
+            computed: {
+                head:function(){
+                    return this.pdata[0];
+                },
+                rows:function(){
+                    return this.pdata.slice(1,this.pdata.length);
+                },
+                frows:function (){
+                    var a=[];
+                    var rows = this.rows;
+                    var head = this.head;
+                    for (var i=1;i<rows.length;i++){
+                        var d = {};
+                        for (var j=0;j<head.length;j++){
+                            d[head[j]]=rows[i][j];
+                        }
+                        a.push(d);
+                    }
+                    return a;
+                },
+                parsed_data: function () {
+                    strDelimiter = ",";
+                    var objPattern = new RegExp(
+                        (
+                            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+                            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+                            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+                        ),
+                        "gi"
+                    );
+                    var arrData = [[]];
+                    var arrMatches = null;
+                    while (arrMatches = objPattern.exec(this.data)) {
+                        var strMatchedDelimiter = arrMatches[1];
+                        if (
+                            strMatchedDelimiter.length &&
+                            strMatchedDelimiter !== strDelimiter
+                        ) {
+                            arrData.push([]);
+                        }
+
+                        var strMatchedValue;
+                        if (arrMatches[2]) {
+                            strMatchedValue = arrMatches[2].replace(
+                                new RegExp("\"\"", "g"),
+                                "\""
+                            );
+                        } else {
+                            strMatchedValue = arrMatches[3];
+                        }
+                        arrData[arrData.length - 1].push(strMatchedValue);
+                    }
+
+                    return (arrData);
+                }
+            },
+            created: function () {
+                this.status = "Loading";
+                this.$http.get('processed_datasets.csv').then(function (response) {
+                    this.data = response.body;
+                    this.pdata = this.parsed_data;
+                    this.status = "OK";
+                }, function (response) {
+                    this.data = "";
+                    this.pdata = [[]];
+                    this.status = "Error";
+                });
+            },
+        });
+    </script>
+
+</body>
+
+</html>
