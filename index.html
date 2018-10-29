@@ -24,42 +24,60 @@
     <!-- Our application root element -->
     <div id="app">
         <b-container>
-            <b-jumbotron header="ScraperWiki backup" lead="Overview of datasets and resources copied from scraperwiki.">
-                <p>
-                        <b-btn variant="primary" href="https://github.com/OCHA-DAP/scraperwiki-snapshot">Repository</b-btn>
-                        <b-btn variant="primary" href="https://github.com/orest-d/scraperwiki-backup">Backup Scripts</b-btn>                                
-                    </p>
-                <h3>Tables:</h3>
-                <ol>
-                        <li><b-btn variant="success sm" href="datasets with scraperwiki.xlsx">xlsx</b-btn> - Scraperwiki datasets</li>
-                        <li><b-btn variant="success sm" href="datasets with scraperwiki_additional.xlsx">xlsx</b-btn> - Extended Scraperwiki datasets. Contains additional resources to be included on top of 1.</li>
-                        <li><b-btn variant="success sm" href="processed_datasets.csv">csv</b-btn> Processed datasets - table below with more details. <b-badge>{{status}}</b-badge></li>
-                </ol>
-            </b-jumbotron>
-            <b-form-checkbox id="show_skipped_checkbox" v-model="show_skipped">
-                Show skipped datasets
-            </b-form-checkbox>
-            <table class="table">
-                <tr><th v-for="h in fhead">{{h}}</th></tr>
-                <tr v-for="row in frows" v-if="show_skipped || (row.status!='SKIPPED')">
-                    <td><a :href="'https://test-data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a></td>
-                    <td>
-                            <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
-                            <span v-else>{{row.resource_filename}}</span>
-                    </td>
-                    <td>
-                            <b-badge v-if="row.status=='SKIPPED'" variant="info">{{row.status}}</b-badge>
-                            <b-badge v-if="row.status=='Ok'" variant="light">{{row.status}}</b-badge>
-                            <b-badge v-if="row.status=='OK'" variant="dark">{{row.status}}</b-badge>
-                            <b-badge v-if="row.status=='ERROR'" variant="danger">{{row.status}}</b-badge>
-                        
-                    </td>
-                    <td>
-                            <b-badge v-if="row.update_status=='ERROR'" variant="danger">{{row.update_status}}</b-badge>
-                            <span v-else>{{row.update_status}}</span>
-                    </td>
-                </tr>
-            </table>
+            <b-tabs>
+                <b-tab title="Overview" active>
+                    <b-jumbotron header="ScraperWiki backup" lead="Overview of datasets and resources copied from scraperwiki.">
+                        <p>
+                            <b-btn variant="primary" href="https://github.com/OCHA-DAP/scraperwiki-snapshot">Repository</b-btn>
+                            <b-btn variant="primary" href="https://github.com/orest-d/scraperwiki-backup">Backup Scripts</b-btn>
+                        </p>
+                        <h3>Tables:</h3>
+                        <ol>
+                            <li>
+                                <b-btn variant="success sm" href="datasets with scraperwiki.xlsx">xlsx</b-btn> - Scraperwiki datasets</li>
+                            <li>
+                                <b-btn variant="success sm" href="datasets with scraperwiki_additional.xlsx">xlsx</b-btn> - Extended Scraperwiki datasets. Contains additional resources to be included
+                                on top of 1.</li>
+                            <li>
+                                <b-btn variant="success sm" href="processed_datasets.csv">csv</b-btn> Processed datasets - table below with more details.
+                                <b-badge>{{status}}</b-badge>
+                            </li>
+                        </ol>
+                    </b-jumbotron>
+                    <b-form-checkbox id="show_skipped_checkbox" v-model="show_skipped">
+                        Show skipped datasets
+                    </b-form-checkbox>
+                    <table class="table">
+                        <tr>
+                            <th v-for="h in fhead">{{h}}</th>
+                        </tr>
+                        <tr v-for="row in frows" v-if="show_skipped || (row.status!='SKIPPED')">
+                            <td>
+                                <a :href="'https://test-data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a>
+                            </td>
+                            <td>
+                                <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
+                                <span v-else>{{row.resource_filename}}</span>
+                            </td>
+                            <td>
+                                <b-badge v-if="row.status=='SKIPPED'" variant="info">{{row.status}}</b-badge>
+                                <b-badge v-if="row.status=='Ok'" variant="light">{{row.status}}</b-badge>
+                                <b-badge v-if="row.status=='OK'" variant="dark">{{row.status}}</b-badge>
+                                <b-badge v-if="row.status=='ERROR'" variant="danger">{{row.status}}</b-badge>
+
+                            </td>
+                            <td>
+                                <b-badge v-if="row.update_status=='ERROR'" variant="danger">{{row.update_status}}</b-badge>
+                                <span v-else>{{row.update_status}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </b-tab>
+                <b-tab title="Table">
+                    <b-table small striped hover :fields="fields" :items="frows"></b-table>
+                </b-tab>
+            </b-tabs>
+
             <!--
             <table class="table">
                 <tr><th v-for="h in head">{{h}}</th></tr>
@@ -78,26 +96,40 @@
             data: {
                 name: '',
                 data: '',
-                pdata: '',
+                pdata:  '',
                 status: '?',
-                show_skipped: true,
-                fhead: ["Dataset","Resource","Status","Update"]
+                show_skipped: false,
+                fhead: ["Dataset", "Resource", "Status", "Update"],
             },
             computed: {
-                head:function(){
+                fields: function(){
+                    var f=[];
+                    var head = this.head;
+                    for (var i=0;i<head.length; i++){
+                        var key=head[i];
+
+                        f.push({
+                            key: key,
+                            label: key.replace("_"," "),
+                            sortable:true
+                        });
+                    }
+                    return f;
+                },
+                head: function () {
                     return this.pdata[0];
                 },
-                rows:function(){
-                    return this.pdata.slice(1,this.pdata.length);
+                rows: function () {
+                    return this.pdata.slice(1, this.pdata.length);
                 },
-                frows:function (){
-                    var a=[];
+                frows: function () {
+                    var a = [];
                     var rows = this.rows;
                     var head = this.head;
-                    for (var i=1;i<rows.length;i++){
+                    for (var i = 1; i < rows.length; i++) {
                         var d = {};
-                        for (var j=0;j<head.length;j++){
-                            d[head[j]]=rows[i][j];
+                        for (var j = 0; j < head.length; j++) {
+                            d[head[j]] = rows[i][j];
                         }
                         a.push(d);
                     }
