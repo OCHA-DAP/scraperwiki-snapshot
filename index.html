@@ -53,7 +53,7 @@
                         </tr>
                         <tr v-for="row in frows" v-if="show_skipped || (row.status!='SKIPPED')">
                             <td>
-                                <a :href="'https://test-data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a>
+                                <a :href="'https://data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a>
                             </td>
                             <td>
                                 <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
