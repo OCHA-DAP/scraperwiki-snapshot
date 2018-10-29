@@ -44,16 +44,26 @@
                             </li>
                         </ol>
                     </b-jumbotron>
-                    <b-form-checkbox id="show_skipped_checkbox" v-model="show_skipped">
-                        Show skipped datasets
-                    </b-form-checkbox>
+                    <b-row>
+                        <b-col>
+                            <b-form-checkbox id="show_skipped_checkbox" v-model="show_skipped">
+                                Show skipped datasets
+                            </b-form-checkbox>
+                        </b-col>
+                        <b-col>
+                                <b-form-radio-group id="radios2" v-model="server">
+                                    <b-form-radio :value="prod_server">link to <b>production</b></b-form-radio>
+                                    <b-form-radio :value="test_server">link to <b>test</b></b-form-radio>
+                                </b-form-radio-group>
+                        </b-col>
+                    </b-row>
                     <table class="table">
                         <tr>
                             <th v-for="h in fhead">{{h}}</th>
                         </tr>
                         <tr v-for="row in frows" v-if="show_skipped || (row.status!='SKIPPED')">
                             <td>
-                                <a :href="'https://data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a>
+                                <a :href="server+row.dataset_name">{{row.dataset_name}}</a>
                             </td>
                             <td>
                                 <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
@@ -96,22 +106,25 @@
             data: {
                 name: '',
                 data: '',
-                pdata:  '',
+                pdata: '',
                 status: '?',
                 show_skipped: false,
+                prod_server: 'https://data.humdata.org/dataset/',
+                test_server: 'https://test-data.humdata.org/dataset/',
+                server: 'https://data.humdata.org/dataset/',
                 fhead: ["Dataset", "Resource", "Status", "Update"],
             },
             computed: {
-                fields: function(){
-                    var f=[];
+                fields: function () {
+                    var f = [];
                     var head = this.head;
-                    for (var i=0;i<head.length; i++){
-                        var key=head[i];
+                    for (var i = 0; i < head.length; i++) {
+                        var key = head[i];
 
                         f.push({
                             key: key,
-                            label: key.replace("_"," "),
-                            sortable:true
+                            label: key.replace("_", " "),
+                            sortable: true
                         });
                     }
                     return f;
