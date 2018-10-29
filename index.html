@@ -36,9 +36,12 @@
                         <li><b-btn variant="success sm" href="processed_datasets.csv">csv</b-btn> Processed datasets - table below with more details. <b-badge>{{status}}</b-badge></li>
                 </ol>
             </b-jumbotron>
+            <b-form-checkbox id="show_skipped_checkbox" v-model="show_skipped">
+                Show skipped datasets
+            </b-form-checkbox>
             <table class="table">
                 <tr><th v-for="h in fhead">{{h}}</th></tr>
-                <tr v-for="row in frows">
+                <tr v-for="row in frows" v-if="show_skipped || (row.status!='SKIPPED')">
                     <td><a :href="'https://test-data.humdata.org/dataset/'+row.dataset_name">{{row.dataset_name}}</a></td>
                     <td>
                             <a v-if="row.new_resource_url!=''" :href="''+row.new_resource_url">{{row.resource_filename}}</a>
@@ -77,6 +80,7 @@
                 data: '',
                 pdata: '',
                 status: '?',
+                show_skipped: true,
                 fhead: ["Dataset","Resource","Status","Update"]
             },
             computed: {
